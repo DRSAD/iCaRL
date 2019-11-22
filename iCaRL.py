@@ -62,15 +62,12 @@ class iCaRLmodel:
         self.train_loader = None
         self.test_loader = None
 
-    # 获得本次增量所需的数据
-    # 计算蒸馏loss
-    # 增量
     def beforeTrain(self):
         self.model.eval()
         classes = [self.numclass - self.task_size, self.numclass]
         self.train_loader, self.test_loader = self._get_train_and_test_dataloader(classes)
         if self.numclass > self.task_size:
-            # self.old_model_output = self._get_old_model_output(self.train_loader)
+            self.old_model_output = self._get_old_model_output(self.train_loader)
             self.model.Incremental_learning(self.numclass)
         self.model.train()
         self.model.to(device)
@@ -98,19 +95,16 @@ class iCaRLmodel:
                 x[indexs[i].item()] = old_model_output[i].cpu().numpy()
         return x
 
-    # 训练模型
-    # 计算loss
-    # 评估模型
     def train(self):
         accuracy = 0
         opt = optim.SGD(self.model.parameters(), lr=self.learning_rate, weight_decay=0.00001)
         for epoch in range(self.epochs):
             if epoch == 48:
                 opt = optim.SGD(self.model.parameters(), lr=self.learning_rate / 5, weight_decay=0.00001)
-                print("变更学习率为%.3f" % (self.learning_rate / 5))
+                print("change learning rate:%.3f" % (self.learning_rate / 5))
             elif epoch == 62:
                 opt = optim.SGD(self.model.parameters(), lr=self.learning_rate / 25, weight_decay=0.00001)
-                print("变更学习率为%.3f" % (self.learning_rate / 25))
+                print("change learning rate:%.3f" % (self.learning_rate / 25))
             for step, (indexs, images, target) in enumerate(self.train_loader):
                 images, target = images.to(device), target.to(device)
                 output = self.model(images)
@@ -150,13 +144,12 @@ class iCaRLmodel:
             target[..., :old_task_size] = old_target
             return F.binary_cross_entropy_with_logits(output, target)
 
-    # 调整examplar的大小
     def afterTrain(self):
         self.model.eval()
         m = int(self.memory_size / self.numclass)
         self._reduce_exemplar_sets(m)
         for i in range(self.numclass - self.task_size, self.numclass):
-            print('第%s类' % (i), end='')
+            print('the size if examplar %s' % (i), end='')
             images = self.train_dataset.get_image_class(i)
             self._construct_exemplar_set(images, m)
         self.numclass += self.task_size
@@ -186,7 +179,7 @@ class iCaRLmodel:
     def _reduce_exemplar_sets(self, m):
         for index in range(len(self.exemplar_set)):
             self.exemplar_set[index] = self.exemplar_set[index][:m]
-            print('第%d类exemplar的大小为%s' % (index, str(len(self.exemplar_set[index]))))
+            print('the size of examplar %d : %s' % (index, str(len(self.exemplar_set[index]))))
 
     def Image_transform(self, images, transform):
         data = transform(Image.fromarray(images[0])).unsqueeze(0)
@@ -204,7 +197,7 @@ class iCaRLmodel:
     def compute_exemplar_class_mean(self):
         self.class_mean_set = []
         for index in range(len(self.exemplar_set)):
-            print("计算第%s类的类别中心" % (str(index)))
+            print("compute the class mean of %s" % (str(index)))
             exemplar = self.exemplar_set[index]
             # exemplar=self.train_dataset.get_image_class(index)
             class_mean, _ = self.compute_class_mean(exemplar, self.transform)
