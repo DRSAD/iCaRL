@@ -41,8 +41,8 @@ class iCIFAR100(CIFAR100):
         datas,labels=self.concatenate(datas,labels)
         self.TestData=datas if self.TestData==[] else np.concatenate((self.TestData,datas),axis=0)
         self.TestLabels=labels if self.TestLabels==[] else np.concatenate((self.TestLabels,labels),axis=0)
-        print("测试集的大小为%s"%(str(self.TestData.shape)))
-        print("测试集label的大小为%s"%str(self.TestLabels.shape))
+        print("the size of test set is %s"%(str(self.TestData.shape)))
+        print("the size of test label is %s"%str(self.TestLabels.shape))
 
 
     def getTrainData(self,classes,exemplar_set):
@@ -58,8 +58,8 @@ class iCIFAR100(CIFAR100):
             datas.append(data)
             labels.append(np.full((data.shape[0]),label))
         self.TrainData,self.TrainLabels=self.concatenate(datas,labels)
-        print("训练集的大小为%s"%(str(self.TrainData.shape)))
-        print("训练集label的大小为%s"%str(self.TrainLabels.shape))
+        print("the size of train set is %s"%(str(self.TrainData.shape)))
+        print("the size of train label is %s"%str(self.TrainLabels.shape))
 
     def getTrainItem(self,index):
         img, target = Image.fromarray(self.TrainData[index]), self.TrainLabels[index]
