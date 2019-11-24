@@ -149,7 +149,7 @@ class iCaRLmodel:
         m = int(self.memory_size / self.numclass)
         self._reduce_exemplar_sets(m)
         for i in range(self.numclass - self.task_size, self.numclass):
-            print('the size if examplar %s' % (i), end='')
+            print('the size of examplar %s:' % (i), end='')
             images = self.train_dataset.get_image_class(i)
             self._construct_exemplar_set(images, m)
         self.numclass += self.task_size
@@ -172,7 +172,7 @@ class iCaRLmodel:
             now_class_mean += feature_extractor_output[index]
             exemplar.append(images[index])
 
-        print("exemplar size:%s" % (str(len(exemplar))))
+        print("%s" % (str(len(exemplar))))
         self.exemplar_set.append(exemplar)
         #self.exemplar_set.append(images)
 
