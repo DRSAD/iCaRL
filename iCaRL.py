@@ -18,7 +18,7 @@ def get_one_hot(target,num_class):
 
 class iCaRLmodel:
 
-    def __init__(self,numclass,feature_extractor,img_size,batch_size,task_size,memory_size,epochs,learning_rate):
+    def __init__(self,numclass,feature_extractor,batch_size,task_size,memory_size,epochs,learning_rate):
 
         super(iCaRLmodel, self).__init__()
         self.epochs=epochs
