@@ -82,7 +82,7 @@ class iCaRLmodel:
 
         return train_loader, test_loader
     
-    
+    '''
     def _get_old_model_output(self, dataloader):
         x = {}
         for step, (indexs, imgs, labels) in enumerate(dataloader):
@@ -92,7 +92,7 @@ class iCaRLmodel:
             for i in range(len(indexs)):
                 x[indexs[i].item()] = old_model_output[i].cpu().numpy()
         return x
-
+    '''
 
     # train model
     # compute loss
