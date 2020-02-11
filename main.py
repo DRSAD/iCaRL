@@ -8,7 +8,7 @@ img_size=32
 batch_size=128
 task_size=10
 memory_size=2000
-epochs=70
+epochs=100
 learning_rate=2.0
 
 model=iCaRLmodel(numclass,feature_extractor,batch_size,task_size,memory_size,epochs,learning_rate)
