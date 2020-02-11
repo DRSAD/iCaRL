@@ -102,11 +102,30 @@ class iCaRLmodel:
         opt = optim.SGD(self.model.parameters(), lr=self.learning_rate, weight_decay=0.00001)
         for epoch in range(self.epochs):
             if epoch == 48:
-                opt = optim.SGD(self.model.parameters(), lr=self.learning_rate / 5, weight_decay=0.00001)
-                print("change learning rate%.3f" % (self.learning_rate / 5))
+                if self.numclass==self.task_size:
+                     print(1)
+                     opt = optim.SGD(self.model.parameters(), lr=1.0/5, weight_decay=0.00001)
+                else:
+                     for p in opt.param_groups:
+                         p['lr'] =self.learning_rate/ 5
+                     #opt = optim.SGD(self.model.parameters(), lr=self.learning_rate/ 5,weight_decay=0.00001,momentum=0.9,nesterov=True,)
+                print("change learning rate:%.3f" % (self.learning_rate / 5))
             elif epoch == 62:
-                opt = optim.SGD(self.model.parameters(), lr=self.learning_rate / 25, weight_decay=0.00001)
-                print("change learning rate%.3f" % (self.learning_rate / 25))
+                if self.numclass>self.task_size:
+                     for p in opt.param_groups:
+                         p['lr'] =self.learning_rate/ 25
+                     #opt = optim.SGD(self.model.parameters(), lr=self.learning_rate/ 25,weight_decay=0.00001,momentum=0.9,nesterov=True,)
+                else:
+                     opt = optim.SGD(self.model.parameters(), lr=1.0/25, weight_decay=0.00001)
+                print("change learning rate:%.3f" % (self.learning_rate / 25))
+            elif epoch == 80:
+                  if self.numclass==self.task_size:
+                     opt = optim.SGD(self.model.parameters(), lr=1.0 / 125,weight_decay=0.00001)
+                  else:
+                     for p in opt.param_groups:
+                         p['lr'] =self.learning_rate/ 125
+                     #opt = optim.SGD(self.model.parameters(), lr=self.learning_rate / 125,weight_decay=0.00001,momentum=0.9,nesterov=True,)
+                  print("change learning rate:%.3f" % (self.learning_rate / 100))
             for step, (indexs, images, target) in enumerate(self.train_loader):
                 images, target = images.to(device), target.to(device)
                 #output = self.model(images)
