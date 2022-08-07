@@ -9,6 +9,8 @@ from myNetwork import network
 from iCIFAR100 import iCIFAR100
 from torch.utils.data import DataLoader
 
+import os  # for creating the "model" folder 
+
 device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 
 def get_one_hot(target,num_class):
@@ -183,7 +185,20 @@ class iCaRLmodel:
         self.model.train()
         KNN_accuracy=self._test(self.test_loader,0)
         print("NMS accuracy："+str(KNN_accuracy.item()))
-        filename='model/accuracy:%.3f_KNN_accuracy:%.3f_increment:%d_net.pkl' % (accuracy, KNN_accuracy, i + 10)
+        
+        #  modification for win10 pkl weight saving
+#         filename='model/accuracy:%.3f_KNN_accuracy:%.3f_increment:%d_net.pkl' % (accuracy, KNN_accuracy, i + 10)  # original version
+        # first check if exist the “model” folder and create it, or
+#         import os
+        dirs = './model/'
+        if not os.path.exists(dirs):
+            os.makedirs(dirs)
+            print("create the 'model' folder")
+        else:
+            print("exist the 'model' folder")
+        # replace the ':' with '_' and change the 'i+10' to 'i+1'
+        filename='./model/accuracy=%.3f_KNN_accuracy=%.3f_increment=%d_net.pkl' % (accuracy, KNN_accuracy, i + 1)
+        
         torch.save(self.model,filename)
         self.old_model=torch.load(filename)
         self.old_model.to(device)
